@@ -28,6 +28,7 @@ namespace GeckoboardConnector
         }
     }
 
+    [OutputCache(Duration = 0, NoStore = true, Location = System.Web.UI.OutputCacheLocation.None)]
     public class GeckoboardController : BaseApiController
     {
         [System.Web.Mvc.HttpGet]
@@ -1080,8 +1081,10 @@ namespace GeckoboardConnector
                     {
                         if (issue.Comments.Count > 0 && issue.Comments.Any(s => s.Entity.OriginatorType == IssueOriginatorType.Email))
                         {
-                            var comment = issue.Comments.Find(s => s.Entity.OriginatorType == IssueOriginatorType.Email);
-                            timeDifference += (comment.Entity.Created - issue.Created).TotalMinutes;
+                            var allEmailReplies = issue.Comments.FindAll(s => s.Entity.OriginatorType == IssueOriginatorType.Email).Select(s => s.Entity).OrderBy("Created");
+
+                            var comment = allEmailReplies.First();
+                            timeDifference += (comment.Created - issue.Created).TotalMinutes;
                         }
                     }
                     if (timeDifference > 0)
@@ -1121,8 +1124,11 @@ namespace GeckoboardConnector
                 {
                     if (issue.Comments.Count > 0 && issue.Comments.Any(s => s.Entity.OriginatorType == IssueOriginatorType.Email))
                     {
-                        var comment = issue.Comments.Find(s => s.Entity.OriginatorType == IssueOriginatorType.Email);
-                        timeDifference += (comment.Entity.Created - issue.Created).TotalMinutes;
+                        var allEmailReplies = issue.Comments.FindAll(s => s.Entity.OriginatorType == IssueOriginatorType.Email).Select(s => s.Entity).OrderBy("Created");
+
+                        var comment = allEmailReplies.First();
+
+                        timeDifference += (comment.Created - issue.Created).TotalMinutes;
                     }
                 }
 
@@ -1247,8 +1253,11 @@ namespace GeckoboardConnector
                 {
                     if (issue.Comments.Count > 0 && issue.Comments.Any(s => s.Entity.OriginatorType == IssueOriginatorType.Email))
                     {
-                        var comment = issue.Comments.Find(s => s.Entity.OriginatorType == IssueOriginatorType.Email);
-                        timeDifference += (comment.Entity.Created - issue.Created).TotalMinutes;
+                        var allEmailReplies = issue.Comments.FindAll(s => s.Entity.OriginatorType == IssueOriginatorType.Email).Select(s => s.Entity).OrderBy("Created");
+
+                        var comment = allEmailReplies.First();
+
+                        timeDifference += (comment.Created - issue.Created).TotalMinutes;
                         numberOfComments++;
                     }
                 }
