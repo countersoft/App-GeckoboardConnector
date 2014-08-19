@@ -24,7 +24,7 @@ namespace GeckoboardConnector
     {
         public void RegisterRoutes(RouteCollection routes)
         {
-            routes.MapHttpRoute(null, "api/wallboard/{cardId}/{boardoption}/{limit}/{restrictTo}", new { controller = "Geckoboard", action = "Get", limit = RouteParameter.Optional, restrictTo = RouteParameter.Optional }, new { httpMethod = new HttpMethodConstraint(new string[] { "GET" }) });
+            routes.MapHttpRoute(null, "api/wallboard/{cardId}/{boardoption}/{limit}/{restrictTo}/{onlySlaItems}", new { controller = "Geckoboard", action = "Get", limit = RouteParameter.Optional, restrictTo = RouteParameter.Optional, onlySlaItems = RouteParameter.Optional }, new { httpMethod = new HttpMethodConstraint(new string[] { "GET" }) });
         }
     }
 
@@ -32,12 +32,14 @@ namespace GeckoboardConnector
     public class GeckoboardController : BaseApiController
     {
         [System.Web.Mvc.HttpGet]
-        public object Get(int cardId, string boardOption, int limit = 0, string restrictTo = "")
+        public object Get(int cardId, string boardOption, int limit = 0, string restrictTo = "", int onlySlaItems = 0)
         {
             object result = string.Empty;
             
             string username = string.Empty;
-            
+
+            bool onlyIncludeSlaItems = onlySlaItems == 1 ? true : false;
+
             if (Request.Headers.Authorization != null && Request.Headers.Authorization.Parameter != null)
             {
                 username = Encoding.Default.GetString(Convert.FromBase64String(Request.Headers.Authorization.Parameter));
@@ -473,11 +475,13 @@ namespace GeckoboardConnector
                     result = getSlaCount(boardOption, filter, restrictTo);
                     break;
                 case "average-sla-response":              
-                case "average-sla-closing":               
+                case "average-sla-closing":
+                    filter.OnlySLAItems = onlyIncludeSlaItems;
                     result = getSlaTime(boardOption, filter, restrictTo);                    
                     break;
                 case "average-sla-response-total":
                 case "average-sla-closing-total":
+                    filter.OnlySLAItems = onlyIncludeSlaItems;
                     result = getSlaTimeTotal(boardOption, filter, restrictTo);
                     break;
                 case "sla-status-breakdown-list":
