@@ -99,7 +99,7 @@ namespace GeckoboardConnector
             switch (boardOption)
             {
                 case "progress":
-                    issues = IssueManager.GetFiltered(filter);
+                    issues = IssueManager.GetFiltered(filter, true);
 
                     var total = issues.Count;
                     
@@ -119,8 +119,8 @@ namespace GeckoboardConnector
                     
                     break;
                 case "opened-count":
-                    var open = IssueManager.GetFiltered(filter).Count(i => !i.IsClosed);
-                    
+                    var open = IssueManager.GetFiltered(filter, true).Count(i => !i.IsClosed);
+
                     textW.item = new WallboardHelper.TextType[1];
                     
                     textW.item[0] = new WallboardHelper.TextType() { text = string.Format("<div class='opened-count'>{0}</div>", open.ToString()), type = 0 };
@@ -129,7 +129,7 @@ namespace GeckoboardConnector
                     
                     break;
                 case "closed-count":
-                    closed = IssueManager.GetFiltered(filter).Count(i => i.IsClosed);
+                    closed = IssueManager.GetFiltered(filter, true).Count(i => i.IsClosed);
                     
                     textW.item = new WallboardHelper.TextType[1];
                     
@@ -140,7 +140,7 @@ namespace GeckoboardConnector
                     break;
                 case "breached-count":
                     filter.SLAStatus = Constants.SLAStatusBreach.ToString();
-                    var breached = IssueManager.GetFiltered(filter).Count;
+                    var breached = IssueManager.GetFiltered(filter, true).Count;
                     
                     textW.item = new WallboardHelper.TextType[1];
 
@@ -150,7 +150,7 @@ namespace GeckoboardConnector
                     break;
                 case "red-count":
                     filter.SLAStatus = Constants.SLAStatusRed.ToString();
-                    var red = IssueManager.GetFiltered(filter).Count;
+                    var red = IssueManager.GetFiltered(filter, true).Count;
 
                     textW.item = new WallboardHelper.TextType[1];
 
@@ -160,7 +160,7 @@ namespace GeckoboardConnector
                     break;
                 case "amber-count":
                     filter.SLAStatus = Constants.SLAStatusAmber.ToString();
-                    var amber = IssueManager.GetFiltered(filter).Count;
+                    var amber = IssueManager.GetFiltered(filter, true).Count;
 
                     textW.item = new WallboardHelper.TextType[1];
 
@@ -171,7 +171,7 @@ namespace GeckoboardConnector
                 case "green-count":
                     //filter.SLAStatus = Constants.SLAStatusGreen.ToString();
                     filter.SLAItems = true;
-                    var allItems = IssueManager.GetFiltered(filter);
+                    var allItems = IssueManager.GetFiltered(filter, true);
                     int count = 0;
 
                     if (allItems.Count > 0)
@@ -263,7 +263,7 @@ namespace GeckoboardConnector
                     
                     break;
                 case "progress-pie":
-                    issues = IssueManager.GetFiltered(filter);
+                    issues = IssueManager.GetFiltered(filter, true);
                     
                     var totalProgressPie = issues.Count;
                     
@@ -634,8 +634,8 @@ namespace GeckoboardConnector
                 if (filter.IncludeClosed)
                 {
                     filter.SystemFilter = IssuesFilter.SystemFilterTypes.RecentlyClosedIssues;
-                    
-                    issues = IssueManager.GetFiltered(filter);
+
+                    issues = IssueManager.GetFiltered(filter, true);
                     
                     tmp_issues = issues.Take((limit == 0 ? issues.Count : limit));
                 }
@@ -645,8 +645,8 @@ namespace GeckoboardConnector
             else if (option == "opened-recently")
             {
                 filter.SystemFilter = IssuesFilter.SystemFilterTypes.RecentlyCreatedIssues;
-                
-                issues = IssueManager.GetFiltered(filter);
+
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.Take((limit == 0 ? issues.Count : limit));
             }
@@ -661,8 +661,8 @@ namespace GeckoboardConnector
                 filter.InitialDueDate = monday.AddDays(7).ToShortDateString();
                 
                 filter.FinalDueDate = monday.AddDays(13).ToShortDateString();
-                
-                issues = IssueManager.GetFiltered(filter);
+
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.Take((limit == 0 ? issues.Count : limit));
             }
@@ -677,36 +677,36 @@ namespace GeckoboardConnector
                 filter.InitialDueDate = monday.ToShortDateString();
                 
                 filter.FinalDueDate = monday.AddDays(7).ToShortDateString();
-                
-                issues = IssueManager.GetFiltered(filter);
+
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.Take((limit == 0 ? issues.Count : limit));
             }
             else if (option == "due-tomorrow")
             {
                 filter.SystemFilter = IssuesFilter.SystemFilterTypes.DueTomorrowIssues;
-                
-                issues = IssueManager.GetFiltered(filter);
+
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.Take((limit == 0 ? issues.Count : limit));
             }
             else if (option == "due-today")
             {
                 filter.SystemFilter = IssuesFilter.SystemFilterTypes.DueTodayIssues;
-                
-                issues = IssueManager.GetFiltered(filter);
+
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.Take((limit == 0 ? issues.Count : limit));
             }
             else if (option == "closed")
             {
-                issues = IssueManager.GetFiltered(filter);
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.FindAll(i => i.IsClosed).OrderByDescending(i => i.Created).Take((limit == 0 ? issues.Count : limit));
             }
             else if (option == "opened")
             {
-                issues = IssueManager.GetFiltered(filter);
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.FindAll(i => !i.IsClosed).OrderByDescending(i => i.Created).Take((limit == 0 ? issues.Count : limit));
             }
@@ -720,11 +720,11 @@ namespace GeckoboardConnector
                     filter.MaxItemsToReturn = limit;
                 }
 
-                tmp_issues = IssueManager.GetFiltered(filter);
+                tmp_issues = IssueManager.GetFiltered(filter, true);
             }
             else
             {
-                issues = IssueManager.GetFiltered(filter);
+                issues = IssueManager.GetFiltered(filter, true);
                 
                 tmp_issues = issues.OrderByDescending(i => i.Revised).Take((limit == 0 ? issues.Count : limit));
             }
