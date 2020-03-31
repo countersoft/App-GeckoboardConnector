@@ -96,6 +96,13 @@ namespace GeckoboardConnector
 
             restrictTo = restrictTo.ToLowerInvariant();
 
+            var cacheKey = string.Concat(boardOption, '_', restrictTo, '_', cardId, '_', limit, '_', onlySlaItems);
+            var cached = GeckoboardCache.Get(cacheKey);
+            if(cached != null)
+            {
+                return cached;
+            }
+
             switch (boardOption)
             {
                 case "progress":
@@ -496,6 +503,7 @@ namespace GeckoboardConnector
                     break;
             }
 
+            GeckoboardCache.Set(cacheKey, result);
             return result;
         }
 
