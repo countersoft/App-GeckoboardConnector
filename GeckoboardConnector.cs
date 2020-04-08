@@ -12,11 +12,11 @@ using Countersoft.Gemini.Commons.Dto;
 using Countersoft.Gemini.Controllers.Api;
 using Countersoft.Gemini.Extensibility.Apps;
 using System.Web.Routing;
-using System.Web.Http;
 using Countersoft.Gemini.Infrastructure.Helpers;
 using Countersoft.Gemini;
 using Countersoft.Gemini.Infrastructure.Managers;
 using System.Collections;
+using System.Web.Http;
 
 namespace GeckoboardConnector
 {
